@@ -5,11 +5,19 @@
     <title>Minesweeper</title>
 </head>
 <body>
+<link rel="stylesheet" href="main.css">
+<div class="Header">
+    <div class="difficulty-selector">
+        <input type="radio" id="r1" name="difficulty" value="easy"> Beginner<br>
+        <input type="radio" id="r2" name="difficulty" value="middle" checked> Intermediate<br>
+        <input type="radio" id="r3" name="difficulty" value="hard"> Expert
+    </div>
+    <button onclick="reset()">RESET</button>
+</div>
 <canvas width="400" height="400" id='canvas' oncontextmenu="event.preventDefault();"></canvas>
+
 <script src="js/Cells/CellTypes.js"></script>
 <script src="js/Cells/Cell.js"></script>
 <script src="js/game.js"></script>
-
-<button onclick="reset()">RESET</button>
 </body>
 </html>

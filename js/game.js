@@ -1,21 +1,46 @@
 const cellSize = 40;
-const canvasWidth = cellSize * 10;
-const canvasHeight = cellSize * 10;
-const size = {cols: canvasWidth / cellSize, rows: canvasHeight / cellSize};
-const minesAmount = 3;
+let canvasWidth;
+let canvasHeight;
+let size;
+let minesAmount;
 let isGameOver;
+let difficulty = 2;
 let grid;
 
 function run() {
-    const canvas = document.getElementById('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    canvas.addEventListener("mouseup", handleCanvasClick, false);
     setup();
+    const canvas = document.getElementById('canvas');
+    canvas.addEventListener("mouseup", handleCanvasClick, false);
     draw();
 }
 
 function setup() {
+    switch (difficulty) {
+        case 1: {
+            canvasWidth = cellSize * 5;
+            canvasHeight = cellSize * 5;
+            minesAmount = 3;
+            size = {cols: canvasWidth / cellSize, rows: canvasHeight / cellSize};
+            break;
+        }
+        case 2: {
+            canvasWidth = cellSize * 10;
+            canvasHeight = cellSize * 10;
+            minesAmount = 15;
+            size = {cols: canvasWidth / cellSize, rows: canvasHeight / cellSize};
+            break;
+        }
+        case 3: {
+            canvasWidth = cellSize * 20;
+            canvasHeight = cellSize * 15;
+            minesAmount = 50;
+            size = {cols: canvasWidth / cellSize, rows: canvasHeight / cellSize};
+            break;
+        }
+    }
+    const canvas = document.getElementById('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     grid = create2DArray(size);
     isGameOver = false;
     for(var x = 0; x < size.cols; x++) {
@@ -33,6 +58,18 @@ function draw() {
         for (var y = 0; y < size.rows; y++) {
             grid[x][y].draw(ctx, cellSize);
         }
+    }
+}
+
+function handleDifficulty() {
+    if (document.getElementById('r1').checked) {
+        difficulty = 1;
+    }
+    else if (document.getElementById('r2').checked) {
+        difficulty = 2;
+    }
+    else if (document.getElementById('r3').checked) {
+        difficulty = 3;
     }
 }
 
@@ -188,6 +225,7 @@ function getRandomNumber(endNum) {
 }
 
 function reset() {
+    handleDifficulty();
     setup();
     draw();
 }
