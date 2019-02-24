@@ -1,8 +1,9 @@
 const cellSize = 40;
-const canvasWidth = cellSize * 20;
-const canvasHeight = cellSize * 15;
+const canvasWidth = cellSize * 10;
+const canvasHeight = cellSize * 10;
 const size = {cols: canvasWidth / cellSize, rows: canvasHeight / cellSize};
-const minesAmount = 20;
+const minesAmount = 3;
+let isGameOver;
 let grid;
 
 function run() {
@@ -16,6 +17,7 @@ function run() {
 
 function setup() {
     grid = create2DArray(size);
+    isGameOver = false;
     for(var x = 0; x < size.cols; x++) {
         for (var y = 0; y < size.rows; y++) {
             grid[x][y] = new Cell(x * cellSize, y * cellSize);
@@ -64,6 +66,37 @@ function handleCanvasClick(event) {
         }
     }
     draw();
+    validateGameEnd();
+}
+
+function drawGameEnd() {
+    const canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext("2d");
+    ctx.font = "24px Georgia";
+    if (isGameOver) {
+        ctx.fillText('~GAME OVER~', canvasWidth / 2 - ctx.measureText('~GAME OVER~').width / 2, canvasHeight / 3);
+    } else {
+        ctx.fillText('~CONGRATULATION~', canvasWidth / 2 - ctx.measureText('~CONGRATULATION~').width / 2, canvasHeight / 3);
+    }
+}
+
+function validateGameEnd() {
+    var ended = true;
+    for(var x = 0; x < size.cols; x++) {
+        for (var y = 0; y < size.rows; y++) {
+            if (!grid[x][y].opened && grid[x][y].type !== mine) {
+                ended = false;
+                break;
+            }
+        }
+    }
+    if (ended && !isGameOver) {
+        console.log("WIN!!!");
+        drawGameEnd();
+    } else if (isGameOver) {
+        console.log('GAME OVER');
+        drawGameEnd();
+    }
 }
 
 function reveal(cellX, cellY) {
@@ -95,12 +128,11 @@ function gameOver(cellX, cellY) {
             grid[x][y].opened = true;
             if (grid[x][y].flagged && grid[x][y].type === mine) {
                 grid[x][y].type = disabledMine;
-                console.log(grid[x][y])
             }
         }
     }
     grid[cellX][cellY].type = explodedMine;
-    draw();
+    isGameOver = true;
 }
 
 function generateField() {
